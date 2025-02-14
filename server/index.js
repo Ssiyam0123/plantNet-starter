@@ -48,9 +48,16 @@ const client = new MongoClient(uri, {
 })
 async function run() {
   try {
+
+
+    //db connnection
+    const userCollections = client.db('plantNet').collection('userDb')
+
+
     // Generate jwt token
     app.post('/jwt', async (req, res) => {
       const email = req.body
+      console.log(email)
       const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: '365d',
       })
@@ -76,6 +83,29 @@ async function run() {
         res.status(500).send(err)
       }
     })
+
+    app.post('/user/:email',async(req,res)=>{
+      const email = req.params;
+      // console.log(email)
+      const user = req.body;
+      // console.log("before affended user role:",user)
+      const query = await userCollections.findOne(email)
+      if(!query){
+        const userData = {
+          ...user,
+          role:'Customer'
+        }
+        console.log("after affended user role:",userData)
+        const result = await userCollections.insertOne(userData)
+        res.send(result)
+        // console.log(result)
+      }
+      // console.log(query)
+      res.status(200)
+    })
+
+    //add pant to databse 
+
 
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 })
