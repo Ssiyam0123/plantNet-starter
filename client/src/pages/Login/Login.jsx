@@ -9,7 +9,7 @@ const Login = () => {
   const { signIn, signInWithGoogle, loading, user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const from = location?.state?.from?.pathname || '/'
+  const from = location?.state || '/'
   if (user) return <Navigate to={from} replace={true} />
   if (loading) return <LoadingSpinner />
   // form submit handler

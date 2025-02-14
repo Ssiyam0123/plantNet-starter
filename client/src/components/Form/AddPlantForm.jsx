@@ -3,9 +3,12 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import imagebb from "../../api/imagebb";
+import useAuth from "../../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const AddPlantForm = () => {
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -22,12 +25,36 @@ const AddPlantForm = () => {
     // Upload image to IMGBB
     const imageData = new FormData();
     imageData.append("image", data.image[0]);
-    const imageLink = await  imagebb(imageData)
+    const imageLink = imagebb(imageData);
+
+    // console.log(imageLink)
+    // console.log(data)
+
+    const plant = {
+      name: data.name,
+      category: data.category,
+      description: data.description,
+      image: imageLink,
+      price: data.price,
+      quantity: data.quantity,
+      seller: {
+        name: user?.displayName,
+        image: user?.photoURL,
+        email: user?.email,
+      },
+    };
+
+    try {
+      const res = await axios.post("http://localhost:5000/add-plant",plant);
+    if(res.data.insertedId){
+      toast.success('New plant added successfully')
+    }
+    } catch (error) {
+      toast.error(error)
+    }
 
     
-
-    console.log(imageLink)
-
+    // console.log(plant);
   };
 
   return (
@@ -47,7 +74,9 @@ const AddPlantForm = () => {
                 placeholder="Plant Name"
                 {...register("name", { required: "Name is required" })}
               />
-              {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name.message}</p>
+              )}
             </div>
 
             {/* Category */}
@@ -64,7 +93,11 @@ const AddPlantForm = () => {
                 <option value="Succulent">Succulent</option>
                 <option value="Flowering">Flowering</option>
               </select>
-              {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
+              {errors.category && (
+                <p className="text-red-500 text-sm">
+                  {errors.category.message}
+                </p>
+              )}
             </div>
 
             {/* Description */}
@@ -94,9 +127,14 @@ const AddPlantForm = () => {
                   id="price"
                   type="number"
                   placeholder="Price per unit"
-                  {...register("price", { required: "Price is required", min: 1 })}
+                  {...register("price", {
+                    required: "Price is required",
+                    min: 1,
+                  })}
                 />
-                {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
+                {errors.price && (
+                  <p className="text-red-500 text-sm">{errors.price.message}</p>
+                )}
               </div>
 
               {/* Quantity */}
@@ -109,9 +147,16 @@ const AddPlantForm = () => {
                   id="quantity"
                   type="number"
                   placeholder="Available quantity"
-                  {...register("quantity", { required: "Quantity is required", min: 1 })}
+                  {...register("quantity", {
+                    required: "Quantity is required",
+                    min: 1,
+                  })}
                 />
-                {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
+                {errors.quantity && (
+                  <p className="text-red-500 text-sm">
+                    {errors.quantity.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -132,7 +177,9 @@ const AddPlantForm = () => {
                   </label>
                 </div>
               </div>
-              {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
+              {errors.image && (
+                <p className="text-red-500 text-sm">{errors.image.message}</p>
+              )}
             </div>
 
             {/* Submit Button */}
