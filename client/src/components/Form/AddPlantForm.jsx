@@ -45,7 +45,7 @@ const AddPlantForm = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/add-plant",plant);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/add-plant`,plant);
     if(res.data.insertedId){
       toast.success('New plant added successfully')
     }

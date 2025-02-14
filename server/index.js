@@ -103,13 +103,20 @@ async function run() {
       res.send(query);
     });
 
-    //add pant to databse
+    //post pant to databse
     app.post("/add-plant", async (req, res) => {
       const data = req.body;
       console.log(data);
       const result = await plantsCollections.insertOne(data);
       res.send(result);
     });
+
+    //get plant route
+    app.get('/plants', async(req,res)=>{
+      const result = await plantsCollections.find().toArray();
+      // console.log('here is get data',result)
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

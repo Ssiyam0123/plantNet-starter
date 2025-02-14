@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const Card = () => {
+const Card = (data) => {
   return (
     <Link
       to={`/plant/1`}
