@@ -9,12 +9,12 @@ const morgan = require('morgan')
 const port = process.env.PORT || 9000
 const app = express()
 // middleware
-const corsOptions = {
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
-  credentials: true,
-  optionSuccessStatus: 200,
-}
-app.use(cors(corsOptions))
+// const corsOptions = {
+//   origin: ['http://localhost:5173', 'http://localhost:5174','http://localhost:5176'],
+//   credentials: true,
+//   optionSuccessStatus: 200,
+// }
+app.use(cors())
 
 app.use(express.json())
 app.use(cookieParser())
