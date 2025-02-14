@@ -35,8 +35,8 @@ const AddPlantForm = () => {
       category: data.category,
       description: data.description,
       image: imageLink,
-      price: data.price,
-      quantity: data.quantity,
+      price: parseFloat(data.price),
+      quantity: parseInt(data.quantity),
       seller: {
         name: user?.displayName,
         image: user?.photoURL,
@@ -45,15 +45,17 @@ const AddPlantForm = () => {
     };
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/add-plant`,plant);
-    if(res.data.insertedId){
-      toast.success('New plant added successfully')
-    }
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/add-plant`,
+        plant
+      );
+      if (res.data.insertedId) {
+        toast.success("New plant added successfully");
+      }
     } catch (error) {
-      toast.error(error)
+      toast.error(error);
     }
 
-    
     // console.log(plant);
   };
 

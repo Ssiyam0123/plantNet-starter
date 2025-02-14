@@ -112,11 +112,19 @@ async function run() {
     });
 
     //get plant route
-    app.get('/plants', async(req,res)=>{
+    app.get("/plants", async (req, res) => {
       const result = await plantsCollections.find().toArray();
       // console.log('here is get data',result)
-      res.send(result)
-    })
+      res.send(result);
+    });
+
+    //for single plant api
+    app.get("/details/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await plantsCollections.findOne(query);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

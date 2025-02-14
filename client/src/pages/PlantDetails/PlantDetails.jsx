@@ -4,8 +4,17 @@ import Heading from '../../components/Shared/Heading'
 import Button from '../../components/Shared/Button/Button'
 import PurchaseModal from '../../components/Modal/PurchaseModal'
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 const PlantDetails = () => {
+
+  const {id} = useParams();
+  console.log(id)
+
+  
+
+
+
   let [isOpen, setIsOpen] = useState(false)
 
   const closeModal = () => {
