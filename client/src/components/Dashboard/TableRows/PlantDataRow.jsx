@@ -3,7 +3,7 @@ import DeleteModal from "../../Modal/DeleteModal";
 import UpdatePlantModal from "../../Modal/UpdatePlantModal";
 import axios from "axios";
 
-const PlantDataRow = ({ plant }) => {
+const PlantDataRow = ({ plant,refetch }) => {
   const { name, category, description, image, seller, quantity, price, _id } = plant;
   console.log(plant);
   let [isOpen, setIsOpen] = useState(false);
@@ -62,7 +62,7 @@ const PlantDataRow = ({ plant }) => {
           ></span>
           <span className="relative">Delete</span>
         </span>
-        <DeleteModal isOpen={isOpen} closeModal={closeModal} id={_id}/>
+        <DeleteModal isOpen={isOpen} closeModal={closeModal} id={_id} refetch={refetch}/>
       </td>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
         <span

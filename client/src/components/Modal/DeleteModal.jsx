@@ -5,20 +5,32 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import toast from "react-hot-toast";
-const DeleteModal = ({ closeModal, isOpen, id }) => {
+const DeleteModal = ({ closeModal, isOpen, id, refetch }) => {
   // console.log(isOpen,closeModal)
+  useEffect(()=>{
+    // handleDelete()
+  },[])
 
   const handleDelete = async () => {
     console.log(id)
-    const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${id}`);
-    if(data.deletedCount>0){
-      toast.success('delete successfull')
+    try {
+      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${id}`);
+      if(data.deletedCount>0){
+        toast.success('delete successfull')
+        closeModal()
+        refetch()
+      }
+      console.log(data);
+      
+    } catch (error) {
+      closeModal()
+      toast.error(error)
     }
-    console.log(data);
+
   };
 
   return (
