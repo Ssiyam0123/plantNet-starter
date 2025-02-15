@@ -9,7 +9,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/plants`
+        `${import.meta.env.VITE_API_URL}/plants`
       );
       setPlants(data);
       console.log(data)
