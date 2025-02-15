@@ -25,7 +25,7 @@ const AddPlantForm = () => {
     // Upload image to IMGBB
     const imageData = new FormData();
     imageData.append("image", data.image[0]);
-    const imageLink = imagebb(imageData);
+    const imageLink = await imagebb(imageData);
 
     // console.log(imageLink)
     // console.log(data)
