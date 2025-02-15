@@ -1,7 +1,19 @@
 import { Helmet } from 'react-helmet-async'
 import UserDataRow from '../../../components/Dashboard/TableRows/UserDataRow'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import useAuth from '../../../hooks/useAuth'
 
 const ManageUsers = () => {
+  const {user} = useAuth()
+  const {data : users = []}= useQuery({
+    queryKey:['alluser'],
+    queryFn: async ()=>{
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/user/${user?.email}`);
+      return res.data;
+    }
+  })
+  console.log(users)
   return (
     <>
       <div className='container mx-auto px-4 sm:px-8'>
@@ -42,7 +54,7 @@ const ManageUsers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <UserDataRow />
+                  <UserDataRow  users={users}/>
                 </tbody>
               </table>
             </div>
