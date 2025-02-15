@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 const Card = ({ data }) => {
-  console.log(data);
+  // console.log(data);
   const { _id, name, category, description, image, seller, quantity, price } =
     data;
   return (

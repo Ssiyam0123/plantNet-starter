@@ -12,8 +12,8 @@ const Home = () => {
         `${import.meta.env.VITE_API_URL}/plants`
       );
       setPlants(data);
-      console.log(data)
-      console.log(plants);
+      // console.log(data)
+      // console.log(plants);
     };
     fetchData();
   }, []);

@@ -3,11 +3,11 @@ import UpdateUserModal from "../../Modal/UpdateUserModal";
 import PropTypes from "prop-types";
 const UserDataRow = ({ users }) => {
   const [isOpen, setIsOpen] = useState(false);
-  console.log(users)
+  // console.log(users)
 
   return (
     <>
-      {users.map((user) => (
+      {users?.map((user) => (
         <tr key={user._id}>
           <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
             <p className="text-gray-900 whitespace-no-wrap">{user?.email}</p>

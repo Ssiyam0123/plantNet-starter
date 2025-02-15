@@ -5,7 +5,7 @@ import axios from "axios";
 
 const PlantDataRow = ({ plant,refetch }) => {
   const { name, category, description, image, seller, quantity, price, _id } = plant;
-  console.log(plant);
+  // console.log(plant);
   let [isOpen, setIsOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 

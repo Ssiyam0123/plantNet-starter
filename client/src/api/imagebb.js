@@ -7,7 +7,7 @@ const imagebb = async (imageData) => {
   );
 
   const imageLink = response.data.data.url;
-  console.log(imageLink)
+  // console.log(imageLink)
 
   return imageLink;
 };

@@ -16,7 +16,7 @@ const DeleteModal = ({ closeModal, isOpen, id, refetch }) => {
   },[])
 
   const handleDelete = async () => {
-    console.log(id)
+    // console.log(id)
     try {
       const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${id}`);
       if(data.deletedCount>0){
@@ -24,7 +24,7 @@ const DeleteModal = ({ closeModal, isOpen, id, refetch }) => {
         closeModal()
         refetch()
       }
-      console.log(data);
+      // console.log(data);
       
     } catch (error) {
       closeModal()
