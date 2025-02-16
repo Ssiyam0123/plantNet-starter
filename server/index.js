@@ -168,6 +168,46 @@ async function run() {
       res.send(result)
     });
 
+    //get my order
+    app.get('/myorders/:email', async(req,res)=>{
+      const email = req.params.email;
+      const query = {'customer.email': email};
+      const result = await ordersCollections.aggregate([
+        {
+          $match : query,
+        },
+        {
+          $addFields:{
+            plantId : {
+              $toObjectId: '$plantId'
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: 'plantsDb',
+            localField: 'plantId',
+            foreignField: '_id',
+            as:'plants'
+          }
+        },
+        {
+          $unwind: '$plants'
+        },
+        {
+          $project:{
+            
+          }
+        }
+      ]).toArray();
+      res.send(result)
+    })
+
+
+
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(

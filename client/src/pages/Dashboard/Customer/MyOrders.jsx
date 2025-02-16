@@ -1,7 +1,19 @@
 import { Helmet } from 'react-helmet-async'
 import CustomerOrderDataRow from '../../../components/Dashboard/TableRows/CustomerOrderDataRow'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import useAuth from '../../../hooks/useAuth'
 
 const MyOrders = () => {
+  const {user} = useAuth()
+  const {data} = useQuery({
+    queryKey: ['orders'],
+    queryFn: async () => {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/myorders/${user?.email}`)
+      return res.data
+    }
+  })
+  console.log(data)
   return (
     <>
       <Helmet>

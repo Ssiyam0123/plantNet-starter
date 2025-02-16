@@ -17,36 +17,18 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  // State for purchase information
-  const [purchaseInfo, setPurchaseInfo] = useState({
-    customer: {
-      name: user?.displayName,
-      email: user?.email,
-      image: user?.photoURL,
-    },
-    plantId: _id,
-    price: price, // Initial price
-    quantity: 1, // Default quantity
-    seller: seller?.email,
-    address: "",
-    status: "Pending",
-  });
+  const [stateQuantity, setStateQuantity] = useState(1);
+  const [address, setAddress] = useState("");
 
-  // Update price dynamically based on quantity
-  useEffect(() => {
-    setPurchaseInfo((prev) => ({
-      ...prev,
-      price: prev.quantity * price,
-    }));
-  }, [purchaseInfo.quantity]);
+  // Calculate total price 
+  const totalPrice = parseFloat(stateQuantity * price).toFixed(2);
 
-  // Handle Quantity Change
+  //  Quantity Change
   const handleQuantity = (value) => {
     const newQuantity = parseInt(value, 10) || 1;
 
     if (newQuantity < 1) {
-      toast.error("Quantity cannot be less than 1");
-      return;
+      return toast.error("Quantity cannot be less than 1");
     }
 
     if (newQuantity > quantity) {
@@ -54,31 +36,43 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
       return;
     }
 
-    setPurchaseInfo((prev) => ({
-      ...prev,
-      quantity: newQuantity,
-    }));
+    setStateQuantity(newQuantity);
   };
 
   // Handle Payment Process
   const handlePayment = async () => {
-    console.log("Purchase Data:", purchaseInfo);
-    // toast.success("Proceeding to payment...");
-    // Add API request here
+    if (!address.trim()) {
+      return toast.error("Please enter a delivery address");
+    }
+
+    const purchaseInfo = {
+      customer: {
+        name: user?.displayName,
+        email: user?.email,
+        image: user?.photoURL,
+      },
+      plantId: _id,
+      price: parseFloat(totalPrice),
+      quantity: stateQuantity,
+      seller: seller?.email,
+      address,
+      status: "Pending",
+    };
+
     try {
       const { data } = await axiosSecure.post(`/orderPurchase`, purchaseInfo);
-      console.log(data);
+      console.log("Purchase Success:", data);
 
       await axiosSecure.patch(`/plants/quantity/${_id}`, {
-        quantityToUpdate: purchaseInfo.quantity,
+        quantityToUpdate: stateQuantity,
       });
 
       refetch();
-      toast.success("Payment successfull");
-
+      toast.success("Payment successful");
       closeModal();
     } catch (error) {
-      console.log(error);
+      console.error("Payment Error:", error);
+      toast.error("Payment failed. Please try again.");
     }
   };
 
@@ -115,22 +109,14 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
                 >
                   Review Info Before Purchase
                 </DialogTitle>
+
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">Plant: {name}</p>
-                </div>
-                <div className="mt-2">
                   <p className="text-sm text-gray-500">Category: {category}</p>
-                </div>
-                <div className="mt-2">
                   <p className="text-sm text-gray-500">
                     Customer: {user?.displayName}
                   </p>
-                </div>
-
-                <div className="mt-2">
                   <p className="text-sm text-gray-500">Unit Price: ${price}</p>
-                </div>
-                <div className="mt-2">
                   <p className="text-sm text-gray-500">
                     Available Quantity: {quantity}
                   </p>
@@ -140,7 +126,7 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
                 <div className="mt-2 flex justify-between items-center">
                   <label className="text-sm text-gray-500">Quantity:</label>
                   <input
-                    value={purchaseInfo.quantity}
+                    value={stateQuantity}
                     onChange={(e) => handleQuantity(e.target.value)}
                     className="p-2 bg-white border-2 rounded-md w-24"
                     type="number"
@@ -157,13 +143,8 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
                   </label>
                   <input
                     type="text"
-                    value={purchaseInfo.address}
-                    onChange={(e) =>
-                      setPurchaseInfo((prev) => ({
-                        ...prev,
-                        address: e.target.value,
-                      }))
-                    }
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                     className="p-2 w-full bg-white border-2 rounded-md mt-1"
                     placeholder="Enter your address"
                   />
@@ -171,15 +152,13 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
 
                 {/* Total Price */}
                 <div className="mt-2 text-right">
-                  <p className="text-lg font-semibold">
-                    Total: ${purchaseInfo.price}
-                  </p>
+                  <p className="text-lg font-semibold">Total: ${totalPrice}</p>
                 </div>
 
                 <div className="mt-5">
                   <Button
                     onClick={handlePayment}
-                    label={`Purchase -> $${purchaseInfo.price}`}
+                    label={`Purchase -> $${totalPrice}`}
                   />
                 </div>
               </DialogPanel>
