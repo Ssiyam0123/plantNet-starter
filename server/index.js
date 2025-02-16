@@ -195,8 +195,15 @@ async function run() {
           $unwind: '$plants'
         },
         {
+          $addFields:{
+            name: '$plants.name',
+            image:"$plants.image",
+            category: "$plants.category"
+          }
+        },
+        {
           $project:{
-            
+            plants: 0
           }
         }
       ]).toArray();
