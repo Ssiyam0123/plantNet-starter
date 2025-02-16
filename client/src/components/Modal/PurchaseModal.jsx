@@ -12,10 +12,10 @@ import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
-const PurchaseModal = ({ closeModal, isOpen, plant }) => {
+const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
   const { name, category, seller, quantity, price, _id } = plant;
   const { user } = useAuth();
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
 
   // State for purchase information
   const [purchaseInfo, setPurchaseInfo] = useState({
@@ -66,17 +66,20 @@ const PurchaseModal = ({ closeModal, isOpen, plant }) => {
     // toast.success("Proceeding to payment...");
     // Add API request here
     try {
-      const {data} = await axiosSecure.post(`/orderPurchase`, purchaseInfo)
-      console.log(data)
-      if(data.insertedId>0){
-            toast.success("Payment successfull");
-            closeModal()
+      const { data } = await axiosSecure.post(`/orderPurchase`, purchaseInfo);
+      console.log(data);
 
-      }
+      await axiosSecure.patch(`/plants/quantity/${_id}`, {
+        quantityToUpdate: purchaseInfo.quantity,
+      });
+
+      refetch();
+      toast.success("Payment successfull");
+
+      closeModal();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    
   };
 
   return (
