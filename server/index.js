@@ -50,6 +50,7 @@ async function run() {
   try {
     //db connnection
     const userCollections = client.db("plantNet").collection("userDb");
+    const ordersCollections = client.db("plantNet").collection("orderDb");
     const plantsCollections = client.db("plantNet").collection("plantsDb");
 
     // Generate jwt token
@@ -142,6 +143,15 @@ async function run() {
       const result = await userCollections.find(query).toArray();
       res.send(result);
     });
+
+    //save order data
+    app.post('/orderPurchase', async(req,res)=>{
+      const data = req.body;
+      const result = await ordersCollections.insertOne(data);
+      res.send(result)
+    })
+
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

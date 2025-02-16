@@ -7,24 +7,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 
 const PlantDetails = () => {
-  // const [plants, setPlants] = useState([]);
-
   const { id } = useParams();
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const { data } = await axios.get(
-  //       `${import.meta.env.VITE_API_URL}/details/${id}`
-  //     );
-  //     setPlants(data);
-  //   };
-  //   fetchData();
-  // }, []);
-
-  const { data: plants = [] } = useQuery({
-    queryKey: ["plants", id],
+  const { data: plant = [], isLoading } = useQuery({
+    queryKey: ["plant", id],
     queryFn: async () => {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/details/${id}`
@@ -33,14 +21,15 @@ const PlantDetails = () => {
     },
   });
   const { name, category, description, image, seller, quantity, price } =
-    plants;
-    // console.log(plants)
+    plant;
+  // console.log(plants)
 
   let [isOpen, setIsOpen] = useState(false);
 
   const closeModal = () => {
     setIsOpen(false);
   };
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <Container>
@@ -105,12 +94,12 @@ const PlantDetails = () => {
           <div className="flex justify-between">
             <p className="font-bold text-3xl text-gray-500">Price: {price}$</p>
             <div>
-              <Button label="Purchase" />
+              <Button onClick={()=>setIsOpen(true)} label={quantity > 0 ? "Purchase" : "Out of Stock"} />
             </div>
           </div>
           <hr className="my-6" />
 
-          <PurchaseModal closeModal={closeModal} isOpen={isOpen} />
+          <PurchaseModal plant={plant} closeModal={closeModal} isOpen={isOpen} />
         </div>
       </div>
     </Container>
