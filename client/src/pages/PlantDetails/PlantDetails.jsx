@@ -6,23 +6,35 @@ import PurchaseModal from "../../components/Modal/PurchaseModal";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const PlantDetails = () => {
-  const [plants, setPlants] = useState([]);
-  const { name, category, description, image, seller, quantity, price } =
-    plants;
+  // const [plants, setPlants] = useState([]);
 
   const { id } = useParams();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await axios.get(
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const { data } = await axios.get(
+  //       `${import.meta.env.VITE_API_URL}/details/${id}`
+  //     );
+  //     setPlants(data);
+  //   };
+  //   fetchData();
+  // }, []);
+
+  const { data: plants = [] } = useQuery({
+    queryKey: ["plants", id],
+    queryFn: async () => {
+      const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/details/${id}`
       );
-      setPlants(data);
-    };
-    fetchData();
-  }, []);
+      return response.data;
+    },
+  });
+  const { name, category, description, image, seller, quantity, price } =
+    plants;
+    // console.log(plants)
 
   let [isOpen, setIsOpen] = useState(false);
 
