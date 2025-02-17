@@ -211,6 +211,40 @@ async function run() {
     })
 
 
+    // app.get('/myorders/:email', async (req,res)=>{
+    //   const email = req.params.email;
+    //   const data = req.body;
+    //   const filter = {'customer.email': email};
+    //   const result = await ordersCollections.aggregate([
+    //     {
+    //       $match: filter,
+    //     },
+    //     {
+    //       $addFields: {
+    //        plantId: { $toObjectId: '$plantId'}
+    //       }
+    //     },
+    //     {
+    //       $lookup: {
+    //         from: 'plantDb',
+    //         localField: 'plantId',
+    //         foreignField: '_id',
+    //         as: 'plants',
+    //       }
+    //     }
+    //   ])
+    // })
+
+
+    //cancel order api 
+    app.delete("/cancelorder/:id", async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+      const result = await ordersCollections.deleteOne(query);
+      res.send(result)
+    })
+
+
 
 
 

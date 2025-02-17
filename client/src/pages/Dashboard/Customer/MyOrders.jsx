@@ -6,7 +6,7 @@ import useAuth from "../../../hooks/useAuth";
 
 const MyOrders = () => {
   const { user } = useAuth();
-  const { data: orders = [] } = useQuery({
+  const { data: orders = [], refetch } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
       const res = await axios.get(
@@ -15,6 +15,7 @@ const MyOrders = () => {
       return res.data;
     },
   });
+
   // console.log(data)
   return (
     <>
@@ -75,7 +76,7 @@ const MyOrders = () => {
                 </thead>
                 <tbody>
                   {orders.map((order) => (
-                    <CustomerOrderDataRow key={order._id} order={order} />
+                    <CustomerOrderDataRow refetch={refetch} key={order._id} order={order}/>
                   ))}
                 </tbody>
               </table>

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import DeleteModal from '../../Modal/DeleteModal'
-const CustomerOrderDataRow = ({order}) => {
+import axios from 'axios';
+const CustomerOrderDataRow = ({order,handleDelete,refetch}) => {
   const {
     address,
     category,
@@ -17,6 +18,18 @@ const CustomerOrderDataRow = ({order}) => {
   } = order;
   let [isOpen, setIsOpen] = useState(false)
   const closeModal = () => setIsOpen(false)
+
+  const handleOrderDelete =  async (id) =>{
+    console.log(id)
+    const res = await axios.delete(`${import.meta.env.VITE_API_URL}/cancelorder/${id}`)
+    console.log(res.data)
+    if(res.data.deletedCount>0){
+      refetch()
+      closeModal()
+    }
+    return res.data
+   
+  }
 
   return (
     <tr>
@@ -59,7 +72,7 @@ const CustomerOrderDataRow = ({order}) => {
           <span className='relative cursor-pointer'>Cancel</span>
         </button>
 
-        <DeleteModal isOpen={isOpen} closeModal={closeModal} />
+        <DeleteModal handleOrderDelete={handleOrderDelete} id={_id} isOpen={isOpen} closeModal={closeModal} />
       </td>
     </tr>
   )

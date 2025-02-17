@@ -9,29 +9,36 @@ import { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import toast from "react-hot-toast";
-const DeleteModal = ({ closeModal, isOpen, id, refetch }) => {
+const DeleteModal = ({
+  closeModal,
+  isOpen,
+  id,
+  refetch,
+  handleOrderDelete,
+}) => {
+  // console.log(id);
   // console.log(isOpen,closeModal)
-  useEffect(()=>{
+  useEffect(() => {
     // handleDelete()
-  },[])
+  }, []);
 
-  const handleDelete = async () => {
-    // console.log(id)
-    try {
-      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${id}`);
-      if(data.deletedCount>0){
-        toast.success('delete successfull')
-        closeModal()
-        refetch()
-      }
-      // console.log(data);
-      
-    } catch (error) {
-      closeModal()
-      toast.error(error)
-    }
+  // const handleDelete = async () => {
+  //   // console.log(id)
+  //   try {
+  //     const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${id}`);
+  //     if(data.deletedCount>0){
+  //       toast.success('delete successfull')
+  //       closeModal()
+  //       refetch()
+  //     }
+  //     // console.log(data);
 
-  };
+  //   } catch (error) {
+  //     closeModal()
+  //     toast.error(error)
+  //   }
+
+  // };
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -76,7 +83,7 @@ const DeleteModal = ({ closeModal, isOpen, id, refetch }) => {
                   <button
                     type="button"
                     className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
-                    onClick={handleDelete}
+                    onClick={() => handleOrderDelete(id)}
                   >
                     Yes
                   </button>
