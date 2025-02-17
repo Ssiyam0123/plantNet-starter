@@ -51,6 +51,7 @@ const AddPlantForm = () => {
       );
       if (res.data.insertedId) {
         toast.success("New plant added successfully");
+        reset()
       }
     } catch (error) {
       toast.error(error);

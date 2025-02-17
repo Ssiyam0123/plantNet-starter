@@ -134,8 +134,14 @@ async function run() {
     //inventory delete api
     app.delete("/delete/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+      const reqQuantity = req.query.quantity
+      // console.log(dontknow)
+      // console.log(id);
       const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {quantity:reqQuantity}
+      }
+      const updateResult = await plantsCollections.updateOne(query,updateDoc)
       const result = await plantsCollections.deleteOne(query);
       res.send(result);
     });
