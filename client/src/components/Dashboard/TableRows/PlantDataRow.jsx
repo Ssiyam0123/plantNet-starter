@@ -2,6 +2,7 @@ import { useState } from "react";
 import DeleteModal from "../../Modal/DeleteModal";
 import UpdatePlantModal from "../../Modal/UpdatePlantModal";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const PlantDataRow = ({ plant,refetch }) => {
   const { name, category, description, image, seller, quantity, price, _id } = plant;
@@ -19,6 +20,23 @@ const PlantDataRow = ({ plant,refetch }) => {
 
 
 
+  const handleDelete = async () => {
+    // console.log(id)
+    try {
+      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${_id}`);
+      if(data.deletedCount>0){
+        toast.success('delete successfull')
+        closeModal()
+        refetch()
+      }
+      // console.log(data);
+
+    } catch (error) {
+      closeModal()
+      toast.error(error)
+    }
+
+  };
 
 
 
@@ -62,7 +80,7 @@ const PlantDataRow = ({ plant,refetch }) => {
           ></span>
           <span className="relative">Delete</span>
         </span>
-        <DeleteModal isOpen={isOpen} closeModal={closeModal} id={_id} refetch={refetch}/>
+        <DeleteModal isOpen={isOpen} closeModal={closeModal} id={_id} refetch={refetch} handleDelete={handleDelete}/>
       </td>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
         <span

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import DeleteModal from '../../Modal/DeleteModal'
 import axios from 'axios';
+import toast from 'react-hot-toast';
 const CustomerOrderDataRow = ({order,handleDelete,refetch}) => {
   const {
     address,
@@ -19,11 +20,12 @@ const CustomerOrderDataRow = ({order,handleDelete,refetch}) => {
   let [isOpen, setIsOpen] = useState(false)
   const closeModal = () => setIsOpen(false)
 
-  const handleOrderDelete =  async (id) =>{
-    console.log(id)
-    const res = await axios.delete(`${import.meta.env.VITE_API_URL}/cancelorder/${id}`)
+  const handleOrderDelete =  async () =>{
+    // console.log(id)
+    const res = await axios.delete(`${import.meta.env.VITE_API_URL}/cancelorder/${_id}`)
     console.log(res.data)
     if(res.data.deletedCount>0){
+      toast.success('item has been deleted')
       refetch()
       closeModal()
     }
@@ -72,7 +74,7 @@ const CustomerOrderDataRow = ({order,handleDelete,refetch}) => {
           <span className='relative cursor-pointer'>Cancel</span>
         </button>
 
-        <DeleteModal handleOrderDelete={handleOrderDelete} id={_id} isOpen={isOpen} closeModal={closeModal} />
+        <DeleteModal handleYesButton={handleOrderDelete} id={_id} isOpen={isOpen} closeModal={closeModal} />
       </td>
     </tr>
   )
