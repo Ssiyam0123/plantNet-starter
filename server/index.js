@@ -134,14 +134,8 @@ async function run() {
     //inventory delete api
     app.delete("/delete/:id", async (req, res) => {
       const id = req.params.id;
-      const reqQuantity = req.query.quantity
-      // console.log(dontknow)
-      // console.log(id);
+      console.log(id);
       const query = { _id: new ObjectId(id) };
-      const updateDoc = {
-        $set: {quantity:reqQuantity}
-      }
-      const updateResult = await plantsCollections.updateOne(query,updateDoc)
       const result = await plantsCollections.deleteOne(query);
       res.send(result);
     });
@@ -164,96 +158,76 @@ async function run() {
     //manage plant quantity
     app.patch("/plants/quantity/:id", async (req, res) => {
       const id = req.params.id;
-      const { quantityToUpdate } = req.body;
+      const { quantityToUpdate, status } = req.body;
       const query = { _id: new ObjectId(id) };
-      const update = {
+      let update = {
         $inc: { quantity: -quantityToUpdate },
       };
-      const result = await plantsCollections.findOneAndUpdate(query,update);
-      console.log(result)
-      res.send(result)
+      if(status === 'increase'){
+        update = {
+          $inc:{
+            quantity : quantityToUpdate
+          }
+        }
+      }
+      const result = await plantsCollections.findOneAndUpdate(query, update);
+      console.log(result);
+      res.send(result);
     });
 
     //get my order
-    app.get('/myorders/:email', async(req,res)=>{
+    app.get("/myorders/:email", async (req, res) => {
       const email = req.params.email;
-      const query = {'customer.email': email};
-      const result = await ordersCollections.aggregate([
-        {
-          $match : query,
-        },
-        {
-          $addFields:{
-            plantId : {
-              $toObjectId: '$plantId'
-            }
-          }
-        },
-        {
-          $lookup: {
-            from: 'plantsDb',
-            localField: 'plantId',
-            foreignField: '_id',
-            as:'plants'
-          }
-        },
-        {
-          $unwind: '$plants'
-        },
-        {
-          $addFields:{
-            name: '$plants.name',
-            image:"$plants.image",
-            category: "$plants.category"
-          }
-        },
-        {
-          $project:{
-            plants: 0
-          }
-        }
-      ]).toArray();
-      res.send(result)
-    })
+      const query = { "customer.email": email };
+      const result = await ordersCollections
+        .aggregate([
+          {
+            $match: query,
+          },
+          {
+            $addFields: {
+              plantId: {
+                $toObjectId: "$plantId",
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: "plantsDb",
+              localField: "plantId",
+              foreignField: "_id",
+              as: "plants",
+            },
+          },
+          {
+            $unwind: "$plants",
+          },
+          {
+            $addFields: {
+              name: "$plants.name",
+              image: "$plants.image",
+              category: "$plants.category",
+            },
+          },
+          {
+            $project: {
+              plants: 0,
+            },
+          },
+        ])
+        .toArray();
+      res.send(result);
+    });
 
+  
 
-    // app.get('/myorders/:email', async (req,res)=>{
-    //   const email = req.params.email;
-    //   const data = req.body;
-    //   const filter = {'customer.email': email};
-    //   const result = await ordersCollections.aggregate([
-    //     {
-    //       $match: filter,
-    //     },
-    //     {
-    //       $addFields: {
-    //        plantId: { $toObjectId: '$plantId'}
-    //       }
-    //     },
-    //     {
-    //       $lookup: {
-    //         from: 'plantDb',
-    //         localField: 'plantId',
-    //         foreignField: '_id',
-    //         as: 'plants',
-    //       }
-    //     }
-    //   ])
-    // })
-
-
-    //cancel order api 
-    app.delete("/cancelorder/:id", async(req,res)=>{
+    //cancel order api
+    app.delete("/cancelorder/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id : new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await ordersCollections.deleteOne(query);
-      res.send(result)
-    })
-
-
-
-
-
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

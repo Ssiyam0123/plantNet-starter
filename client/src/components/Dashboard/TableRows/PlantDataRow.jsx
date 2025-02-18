@@ -23,7 +23,7 @@ const PlantDataRow = ({ plant,refetch }) => {
   const handleDelete = async () => {
     // console.log(id)
     try {
-      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${_id}?quantity=${quantity}`,);
+      const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${_id}`);
       if(data.deletedCount>0){
         toast.success('delete successfull')
         closeModal()
