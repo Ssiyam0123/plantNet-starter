@@ -1,5 +1,5 @@
-const UpdatePlantForm = () => {
-  return (
+const UpdatePlantForm = ({plant}) => {
+  const { name, category, description, image, seller, quantity, price, _id } = plant;  return (
     <div className='w-full flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
       <form>
         <div className='grid grid-cols-1 gap-10'>
@@ -11,6 +11,7 @@ const UpdatePlantForm = () => {
               </label>
               <input
                 className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
+                defaultValue={name}
                 name='name'
                 id='name'
                 type='text'
@@ -24,6 +25,7 @@ const UpdatePlantForm = () => {
                 Category
               </label>
               <select
+              defaultValue={category}
                 required
                 className='w-full px-4 py-3 border-lime-300 focus:outline-lime-500 rounded-md bg-white'
                 name='category'
@@ -41,6 +43,7 @@ const UpdatePlantForm = () => {
               </label>
 
               <textarea
+              defaultValue={description}
                 id='description'
                 placeholder='Write plant description here...'
                 className='block rounded-md focus:lime-300 w-full h-32 px-4 py-3 text-gray-800  border border-lime-300 bg-white focus:outline-lime-500 '
@@ -59,6 +62,7 @@ const UpdatePlantForm = () => {
                 <input
                   className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
                   name='price'
+                  defaultValue={price}
                   id='price'
                   type='number'
                   placeholder='Price per unit'
@@ -73,6 +77,7 @@ const UpdatePlantForm = () => {
                 </label>
                 <input
                   className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
+                  defaultValue={quantity}
                   name='quantity'
                   id='quantity'
                   type='number'

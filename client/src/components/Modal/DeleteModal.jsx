@@ -9,31 +9,7 @@ import { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import toast from "react-hot-toast";
-const DeleteModal = ({ closeModal, isOpen, id, refetch, handleYesButton  }) => {
-  console.log(id)
-  // console.log(isOpen,closeModal)
-  useEffect(()=>{
-    // handleDelete()
-  },[])
-
-  // const handleDelete = async () => {
-  //   // console.log(id)
-  //   try {
-  //     const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/delete/${id}`);
-  //     if(data.deletedCount>0){
-  //       toast.success('delete successfull')
-  //       closeModal()
-  //       refetch()
-  //     }
-  //     // console.log(data);
-      
-  //   } catch (error) {
-  //     closeModal()
-  //     toast.error(error)
-  //   }
-
-  // };
-
+const DeleteModal = ({ closeModal, isOpen, id, refetch, handleYesButton }) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeModal}>
