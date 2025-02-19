@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import DeleteModal from '../../Modal/DeleteModal'
-const SellerOrderDataRow = () => {
+const SellerOrderDataRow = ({order}) => {
+  const{name, customer,price,quantity,address,status} = order
+
   let [isOpen, setIsOpen] = useState(false)
   const closeModal = () => setIsOpen(false)
 
@@ -11,19 +13,19 @@ const SellerOrderDataRow = () => {
         <p className='text-gray-900 whitespace-no-wrap'>{name}</p>
       </td>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
-        <p className='text-gray-900 whitespace-no-wrap'>abc@gmail.com</p>
+        <p className='text-gray-900 whitespace-no-wrap'>{customer?.email}</p>
       </td>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
-        <p className='text-gray-900 whitespace-no-wrap'>$120</p>
+        <p className='text-gray-900 whitespace-no-wrap'>${price}</p>
       </td>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
-        <p className='text-gray-900 whitespace-no-wrap'>5</p>
+        <p className='text-gray-900 whitespace-no-wrap'>{quantity}</p>
       </td>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
-        <p className='text-gray-900 whitespace-no-wrap'>Dhaka</p>
+        <p className='text-gray-900 whitespace-no-wrap'>{address}</p>
       </td>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
-        <p className='text-gray-900 whitespace-no-wrap'>Pending</p>
+        <p className='text-gray-900 whitespace-no-wrap'>{status}</p>
       </td>
 
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
