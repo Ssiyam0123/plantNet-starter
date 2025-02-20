@@ -1,4 +1,6 @@
-const UpdatePlantForm = ({ plant,handleUpdate }) => {
+import LoadingSpinner from "../Shared/LoadingSpinner";
+
+const UpdatePlantForm = ({ plant,handleUpdate,isLoading }) => {
   const { name, category, description, image, seller, quantity, price, _id } =
     plant;
 
@@ -114,9 +116,10 @@ const UpdatePlantForm = ({ plant,handleUpdate }) => {
             {/* Submit Button */}
             <button
               type="submit"
+              
               className="w-full p-3 mt-5 text-center font-medium text-white transition duration-200 rounded shadow-md bg-lime-500 "
             >
-              Update Plant
+             {isLoading ? <LoadingSpinner/> : 'Update'}
             </button>
           </div>
         </div>

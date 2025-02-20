@@ -232,12 +232,21 @@ async function run() {
     //update inventory
     app.put('/update/:id', async(req,res)=>{
       const id = req.params.id;
+      const data = req.body;
+      // console.log(id)
+      // console.log(data)
       const query = {_id : new ObjectId(id)};
       const updateDoc = {
         $set:{
-          
+          name:data.name,
+          category:data.category,
+          description:data.description,
+          image:data.image,
+          price:data.price,
+          quantity:data.quantity,
         }
       }
+      // console.log(updateDoc)
       const result = await plantsCollections.updateOne(query,updateDoc);
       res.send(result)
     })

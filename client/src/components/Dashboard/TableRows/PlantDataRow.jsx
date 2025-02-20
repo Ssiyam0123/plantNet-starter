@@ -38,9 +38,6 @@ const PlantDataRow = ({ plant,refetch }) => {
 
   };
 
-  const handleUpdate = () =>{
-
-  }
 
 
 
@@ -100,6 +97,7 @@ const PlantDataRow = ({ plant,refetch }) => {
         <UpdatePlantModal
         id={_id}
         plant={plant}
+        refetch={refetch}
           isOpen={isEditModalOpen}
           setIsEditModalOpen={setIsEditModalOpen}
         />

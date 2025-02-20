@@ -7,14 +7,40 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { Fragment } from "react";
-
 import UpdatePlantForm from "../Form/UpdatePlantForm";
 import imagebb from "../../api/imagebb";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-hot-toast"; // Optional: For user feedback
 
-const UpdatePlantModal = ({ setIsEditModalOpen, isOpen, id, plant }) => {
-  // console.log(id)
+const UpdatePlantModal = ({
+  setIsEditModalOpen,
+  isOpen,
+  id,
+  plant,
+  refetch,
+}) => {
+  // ✅ useMutation should be declared at the top level of the component
+  const { mutate: updatePlant, isLoading } = useMutation({
+    mutationFn: async (updateData) => {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/update/${id}`,
+        updateData
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Plant updated successfully!"); // User feedback
+      setIsEditModalOpen(false);
+      refetch(); // Close modal on success
+    },
+    onError: (error) => {
+      console.error("Update failed:", error);
+      toast.error("Failed to update plant.");
+    },
+  });
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
@@ -22,17 +48,35 @@ const UpdatePlantModal = ({ setIsEditModalOpen, isOpen, id, plant }) => {
     const description = form.description.value;
     const price = parseFloat(form.price.value);
     const quantity = parseInt(form.quantity.value);
-    const image = form.image.value;
-    const update = {
+    const imageFile = form.image.files[0];
+
+    let imageLink = plant.image; // Use existing image if none selected
+
+    // ✅ Upload image to IMGBB if a new file is selected
+    if (imageFile) {
+      try {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        const { data } = await imagebb(formData); // Assuming imagebb returns { data: { url: '...' } }
+        imageLink = data?.data?.url;
+      } catch (err) {
+        console.error("Image upload failed:", err);
+        toast.error("Image upload failed.");
+        return;
+      }
+    }
+
+    const updateData = {
       name,
       category,
       description,
+      image: imageLink || plant.image,
       price,
       quantity,
-      image,
     };
-    console.log(image);
-    // console.log(name)
+
+    // ✅ Trigger the mutation
+    updatePlant(updateData);
   };
 
   return (
@@ -72,11 +116,17 @@ const UpdatePlantModal = ({ setIsEditModalOpen, isOpen, id, plant }) => {
                 >
                   Update Plant Info
                 </DialogTitle>
+
                 <div className="mt-2 w-full">
-                  <UpdatePlantForm plant={plant} handleUpdate={handleUpdate} />
+                  <UpdatePlantForm
+                    plant={plant}
+                    handleUpdate={handleUpdate}
+                    isLoading={isLoading}
+                  />
                 </div>
-                <hr className="mt-8 " />
-                <div className="mt-2 ">
+
+                <hr className="mt-8" />
+                <div className="mt-2">
                   <button
                     type="button"
                     className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
@@ -95,8 +145,17 @@ const UpdatePlantModal = ({ setIsEditModalOpen, isOpen, id, plant }) => {
 };
 
 UpdatePlantModal.propTypes = {
-  setIsEditModalOpen: PropTypes.func,
-  isOpen: PropTypes.bool,
+  setIsEditModalOpen: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired,
+  plant: PropTypes.shape({
+    name: PropTypes.string,
+    category: PropTypes.string,
+    description: PropTypes.string,
+    price: PropTypes.number,
+    quantity: PropTypes.number,
+    image: PropTypes.string,
+  }).isRequired,
 };
 
 export default UpdatePlantModal;
