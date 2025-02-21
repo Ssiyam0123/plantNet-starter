@@ -74,6 +74,7 @@ const UpdatePlantModal = ({
       price,
       quantity,
     };
+    console.log(updateData)
 
     // ✅ Trigger the mutation
     updatePlant(updateData);

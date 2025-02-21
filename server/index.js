@@ -90,7 +90,7 @@ async function run() {
     //user route
     app.post("/user/:email", async (req, res) => {
       const email = req.params;
-      // console.log(email)
+      console.log(email);
       const user = req.body;
       // console.log("before affended user role:",user)
       const query = await userCollections.findOne(email);
@@ -163,12 +163,12 @@ async function run() {
       let update = {
         $inc: { quantity: -quantityToUpdate },
       };
-      if(status === 'increase'){
+      if (status === "increase") {
         update = {
-          $inc:{
-            quantity : quantityToUpdate
-          }
-        }
+          $inc: {
+            quantity: quantityToUpdate,
+          },
+        };
       }
       const result = await plantsCollections.findOneAndUpdate(query, update);
       console.log(result);
@@ -219,8 +219,6 @@ async function run() {
       res.send(result);
     });
 
-  
-
     //cancel order api
     app.delete("/cancelorder/:id", async (req, res) => {
       const id = req.params.id;
@@ -230,26 +228,53 @@ async function run() {
     });
 
     //update inventory
-    app.put('/update/:id', async(req,res)=>{
+    app.put("/update/:id", async (req, res) => {
       const id = req.params.id;
       const data = req.body;
       // console.log(id)
       // console.log(data)
-      const query = {_id : new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const updateDoc = {
-        $set:{
-          name:data.name,
-          category:data.category,
-          description:data.description,
-          image:data.image,
-          price:data.price,
-          quantity:data.quantity,
-        }
-      }
+        $set: {
+          name: data.name,
+          category: data.category,
+          description: data.description,
+          image: data.image,
+          price: data.price,
+          quantity: data.quantity,
+        },
+      };
       // console.log(updateDoc)
-      const result = await plantsCollections.updateOne(query,updateDoc);
-      res.send(result)
-    })
+      const result = await plantsCollections.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
+    //manage user status and role
+
+    app.patch("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const { status } = req.body;
+      const query = { email };
+      const user = await userCollections.findOne(query);
+      if (!user || user?.status === "requested")
+        return res.status(400).send("you have already requested");
+
+      const updateDoc = {
+        $set: {
+          status: "request",
+        },
+      };
+
+      const result = await userCollections.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
+    //get user role
+    app.get("/user/role/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await userCollections.findOne({ email });
+      res.send({ role: result?.role });
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

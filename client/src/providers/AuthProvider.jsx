@@ -74,7 +74,7 @@ const AuthProvider = ({ children }) => {
           },
           { withCredentials: true }
         );
-        console.log(res.data);
+        // console.log(res.data);
       } else {
         setUser(currentUser);
         const removetoken = await axios.get(

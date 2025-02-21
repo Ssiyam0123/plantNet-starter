@@ -4,7 +4,7 @@ const UpdatePlantForm = ({ plant,handleUpdate,isLoading }) => {
   const { name, category, description, image, seller, quantity, price, _id } =
     plant;
 
-  
+  if(isLoading) return <LoadingSpinner/>
     return (
     <div className="w-full flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50">
       <form onSubmit={handleUpdate}>
